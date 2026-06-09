@@ -1,0 +1,38 @@
+export interface Medication {
+  id: string;
+  name: string;
+  dose: string;
+  unit: string;
+  frequency: string;
+  times: string[];
+  indication?: string;
+  requirePhoto: boolean;
+}
+
+export interface MedLog {
+  id: string;
+  medicationId: string;
+  timestamp: Date;
+  status: 'taken' | 'pending' | 'missed' | 'upcoming';
+  photoDataUrl?: string;
+  questions: { question: string; answer: boolean }[];
+}
+
+export interface CheckinEntry {
+  id: string;
+  date: Date;
+  ratings: { question: string; value: number }[];
+}
+
+export interface AppSettings {
+  userName: string;
+  eveningCheckinEnabled: boolean;
+  requirePhotoWhenLogging: boolean;
+  loggingQuestionsEnabled: boolean;
+  customQuestions: string[];
+  eveningCheckinTime: string;
+  accentColor: string;
+  darkMode: boolean;
+  disclaimerAccepted: boolean;
+  onboardingComplete: boolean;
+}
