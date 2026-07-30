@@ -7,6 +7,14 @@ export interface Medication {
   times: string[];
   indication?: string;
   requirePhoto: boolean;
+  tabletCount?: string;
+  appearance?: string;
+  asNeeded?: boolean;
+  minIntervalHours?: number;
+  maxDailyDose?: number;
+  maxDailyDoseUnit?: string;
+  selectedQuestions?: string[];
+  photoDataUrl?: string;
 }
 
 export interface MedLog {
