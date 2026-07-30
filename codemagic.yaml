@@ -19,16 +19,10 @@ workflows:
           npm install @capacitor/core @capacitor/ios @capacitor/cli --force
       - name: Build web assets
         script: npm run build
-      - name: Capacitor sync
-        script: npx cap sync ios
-      - name: Check workspace exists
+      - name: Add and sync iOS platform
         script: |
-          echo "--- Repo root ---"
-          ls -la
-          echo "--- ios folder ---"
-          ls -la ios/ || echo "ios/ not found"
-          echo "--- ios/App ---"
-          ls -la ios/App/ || echo "ios/App not found"
+          npx cap add ios || true
+          npx cap sync ios
       - name: Set up code signing
         script: xcode-project use-profiles
       - name: Build iOS
