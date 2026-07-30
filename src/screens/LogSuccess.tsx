@@ -22,17 +22,17 @@ export default function LogSuccessScreen() {
         <CheckCircle2 size={44} color="var(--color-primary)" />
       </div>
 
-      <h1 style={{ fontSize: 26, fontWeight: 700, fontFamily: 'Inter, sans-serif', color: 'var(--color-foreground)', margin: '0 0 8px', textAlign: 'center' }}>
+      <h1 style={{ fontSize: 26, fontWeight: 700, fontFamily: 'Geist, sans-serif', color: 'var(--color-foreground)', margin: '0 0 8px', textAlign: 'center' }}>
         Logged!
       </h1>
 
       {medName && (
-        <p style={{ fontSize: 16, color: 'var(--color-muted-foreground)', fontFamily: 'Inter, sans-serif', margin: '0 0 4px', textAlign: 'center' }}>
+        <p style={{ fontSize: 16, color: 'var(--color-muted-foreground)', fontFamily: 'Geist, sans-serif', margin: '0 0 4px', textAlign: 'center' }}>
           {medName}
         </p>
       )}
       {timeStr && (
-        <p style={{ fontSize: 14, color: 'var(--color-muted-foreground)', fontFamily: "'JetBrains Mono', monospace", margin: '0 0 32px', textAlign: 'center' }}>
+        <p style={{ fontSize: 14, color: 'var(--color-muted-foreground)', fontFamily: 'Geist Mono, monospace', margin: '0 0 32px', textAlign: 'center' }}>
           {timeStr}
         </p>
       )}

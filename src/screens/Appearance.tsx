@@ -6,7 +6,7 @@ import { useApp } from '../context/AppContext';
 const accentColors = [
   { id: 'orange', hex: '#FF8400', label: 'Orange' },
   { id: 'teal', hex: '#38BDF8', label: 'Teal' },
-  { id: 'purple', hex: '#863bff', label: 'Purple' },
+  { id: 'purple', hex: '#A855F7', label: 'Purple' },
   { id: 'green', hex: '#22C55E', label: 'Green' },
   { id: 'pink', hex: '#EC4899', label: 'Pink' },
   { id: 'grey', hex: '#6B7280', label: 'Grey' },
@@ -33,8 +33,8 @@ export default function AppearanceScreen() {
           <Card>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '14px 16px' }}>
               <div>
-                <p style={{ fontSize: 14, fontWeight: 500, fontFamily: 'Inter, sans-serif', color: 'var(--color-foreground)', margin: '0 0 2px' }}>Dark Mode</p>
-                <p style={{ fontSize: 12, color: 'var(--color-muted-foreground)', fontFamily: 'Inter, sans-serif', margin: 0 }}>Easier on the eyes at night</p>
+                <p style={{ fontSize: 14, fontWeight: 500, fontFamily: 'Geist, sans-serif', color: 'var(--color-foreground)', margin: '0 0 2px' }}>Dark Mode</p>
+                <p style={{ fontSize: 12, color: 'var(--color-muted-foreground)', fontFamily: 'Geist, sans-serif', margin: 0 }}>Easier on the eyes at night</p>
               </div>
               <Toggle checked={settings.darkMode} onChange={v => updateSettings({ darkMode: v })} />
             </div>
@@ -72,14 +72,14 @@ export default function AppearanceScreen() {
                 <span style={{ fontSize: 20 }}>◉</span>
               </div>
               <div>
-                <p style={{ fontSize: 15, fontWeight: 700, fontFamily: 'Inter, sans-serif', color: 'var(--color-foreground)', margin: '0 0 2px' }}>Current: {currentColor.label}</p>
-                <p style={{ fontSize: 13, color: 'var(--color-muted-foreground)', fontFamily: 'Inter, sans-serif', margin: 0 }}>Applied to buttons, badges, active tabs & charts</p>
+                <p style={{ fontSize: 15, fontWeight: 700, fontFamily: 'Geist, sans-serif', color: 'var(--color-foreground)', margin: '0 0 2px' }}>Current: {currentColor.label}</p>
+                <p style={{ fontSize: 13, color: 'var(--color-muted-foreground)', fontFamily: 'Geist, sans-serif', margin: 0 }}>Applied to buttons, badges, active tabs & charts</p>
               </div>
             </div>
             <div style={{ display: 'flex', gap: 8 }}>
-              <button style={{ flex: 1, height: 36, borderRadius: 999, background: 'var(--color-primary)', border: 'none', cursor: 'pointer', fontFamily: 'Inter, sans-serif', fontSize: 12, fontWeight: 600, color: 'var(--color-primary-foreground)' }}>Primary</button>
-              <button style={{ flex: 1, height: 36, borderRadius: 999, background: 'var(--color-secondary)', border: 'none', cursor: 'pointer', fontFamily: 'Inter, sans-serif', fontSize: 12, fontWeight: 600, color: 'var(--color-foreground)' }}>Secondary</button>
-              <button style={{ flex: 1, height: 36, borderRadius: 999, background: 'transparent', border: '1px solid var(--color-primary)', cursor: 'pointer', fontFamily: 'Inter, sans-serif', fontSize: 12, fontWeight: 600, color: 'var(--color-primary)' }}>Outline</button>
+              <button style={{ flex: 1, height: 36, borderRadius: 999, background: 'var(--color-primary)', border: 'none', cursor: 'pointer', fontFamily: '"JetBrains Mono", monospace', fontSize: 12, fontWeight: 600, color: 'var(--color-primary-foreground)' }}>Primary</button>
+              <button style={{ flex: 1, height: 36, borderRadius: 999, background: 'var(--color-secondary)', border: 'none', cursor: 'pointer', fontFamily: '"JetBrains Mono", monospace', fontSize: 12, fontWeight: 600, color: 'var(--color-foreground)' }}>Secondary</button>
+              <button style={{ flex: 1, height: 36, borderRadius: 999, background: 'transparent', border: '1px solid var(--color-primary)', cursor: 'pointer', fontFamily: '"JetBrains Mono", monospace', fontSize: 12, fontWeight: 600, color: 'var(--color-primary)' }}>Outline</button>
             </div>
           </Card>
         </div>

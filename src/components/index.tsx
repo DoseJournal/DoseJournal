@@ -2,8 +2,13 @@ import { House, Pill, Calendar, ChartNoAxesColumn, Settings } from 'lucide-react
 import { useNavigate, useLocation } from 'react-router-dom';
 
 export function StatusBar() {
+  const now = new Date();
+  const time = now.toLocaleTimeString('en-AU', { hour: 'numeric', minute: '2-digit', hour12: false });
+
   return (
-    <div style={{ height: 28, flexShrink: 0 }} />
+    <div style={{ height: 62, display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 24px', flexShrink: 0 }}>
+      <span style={{ fontFamily: 'Inter, sans-serif', fontSize: 16, fontWeight: 600, color: 'var(--color-foreground)' }}>{time}</span>
+    </div>
   );
 }
 
@@ -63,7 +68,7 @@ export function BottomNav() {
                 fontSize: 10,
                 fontWeight: 600,
                 letterSpacing: '0.5px',
-                fontFamily: 'Inter, sans-serif',
+                fontFamily: 'Geist, sans-serif',
                 color: active ? 'var(--color-foreground)' : 'var(--color-muted-foreground)',
               }}>{tab.label}</span>
             </button>
@@ -114,9 +119,9 @@ export function Card({ children, style }: { children: React.ReactNode; style?: R
   return (
     <div style={{
       background: 'var(--color-card)',
-      borderRadius: 18,
+      borderRadius: 16,
       border: '1px solid var(--color-border)',
-      boxShadow: 'var(--shadow-card)',
+      boxShadow: '0 1px 4px rgba(0,0,0,0.05)',
       ...style,
     }}>
       {children}
@@ -133,7 +138,7 @@ export function SectionLabel({ children }: { children: React.ReactNode }) {
       textTransform: 'uppercase',
       color: 'var(--color-muted-foreground)',
       marginBottom: 8,
-      fontFamily: 'Inter, sans-serif',
+      fontFamily: 'Geist, sans-serif',
     }}>
       {children}
     </div>
@@ -142,23 +147,21 @@ export function SectionLabel({ children }: { children: React.ReactNode }) {
 
 export function OrangeButton({ children, onClick, style }: { children: React.ReactNode; onClick?: () => void; style?: React.CSSProperties }) {
   return (
-    <button className="btn-primary" onClick={onClick} style={{
+    <button onClick={onClick} style={{
       width: '100%',
-      height: 50,
+      height: 48,
       borderRadius: 999,
-      background: 'linear-gradient(180deg, color-mix(in srgb, var(--color-primary) 100%, white 12%) 0%, var(--color-primary) 100%)',
+      background: 'var(--color-primary)',
       border: 'none',
       cursor: 'pointer',
-      fontFamily: '"Inter", sans-serif',
-      fontSize: 15,
-      fontWeight: 600,
-      letterSpacing: '0.1px',
+      fontFamily: '"JetBrains Mono", monospace',
+      fontSize: 14,
+      fontWeight: 500,
       color: 'var(--color-primary-foreground)',
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
       gap: 8,
-      boxShadow: 'var(--shadow-button)',
       ...style,
     }}>
       {children}
@@ -172,18 +175,17 @@ export function SecondaryButton({ children, onClick, style }: { children: React.
       width: '100%',
       height: 48,
       borderRadius: 999,
-      background: 'var(--color-card)',
-      border: '1px solid var(--color-border)',
+      background: 'var(--color-secondary)',
+      border: 'none',
       cursor: 'pointer',
-      fontFamily: 'Inter, sans-serif',
+      fontFamily: '"JetBrains Mono", monospace',
       fontSize: 14,
-      fontWeight: 600,
+      fontWeight: 500,
       color: 'var(--color-foreground)',
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
       gap: 8,
-      boxShadow: 'var(--shadow-card)',
       ...style,
     }}>
       {children}
@@ -200,7 +202,7 @@ export function NavBar({ title, onBack }: { title: string; onBack?: () => void }
           <path d="M19 12H5M12 5l-7 7 7 7" />
         </svg>
       </button>
-      <span style={{ fontSize: 18, fontWeight: 600, fontFamily: 'Inter, sans-serif', color: 'var(--color-foreground)' }}>{title}</span>
+      <span style={{ fontSize: 18, fontWeight: 600, fontFamily: 'Geist, sans-serif', color: 'var(--color-foreground)' }}>{title}</span>
     </div>
   );
 }
@@ -225,7 +227,7 @@ export function Input({ placeholder, value, onChange, style, type }: {
         border: '1px solid var(--color-border)',
         padding: '0 16px',
         fontSize: 14,
-        fontFamily: 'Inter, sans-serif',
+        fontFamily: 'Geist, sans-serif',
         color: 'var(--color-foreground)',
         width: '100%',
         outline: 'none',
@@ -253,7 +255,7 @@ export function Select({ value, onChange, children, style }: {
         border: '1px solid var(--color-border)',
         padding: '0 16px',
         fontSize: 14,
-        fontFamily: 'Inter, sans-serif',
+        fontFamily: 'Geist, sans-serif',
         color: 'var(--color-foreground)',
         width: '100%',
         outline: 'none',
@@ -285,7 +287,7 @@ export function StatusBadge({ status }: { status: 'taken' | 'pending' | 'missed'
       padding: '4px 10px',
       fontSize: 12,
       fontWeight: 600,
-      fontFamily: 'Inter, sans-serif',
+      fontFamily: 'Geist, sans-serif',
     }}>
       <span>{c.icon}</span>
       <span>{c.label}</span>

@@ -42,15 +42,15 @@ export default function DisclaimerScreen() {
           <div style={{ width: 80, height: 80, borderRadius: '50%', background: '#FFF3E0', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 16 }}>
             <ShieldCheck size={40} color="var(--color-primary)" />
           </div>
-          <h1 style={{ fontSize: 24, fontWeight: 700, fontFamily: 'Inter, sans-serif', color: 'var(--color-foreground)', margin: '0 0 4px', textAlign: 'center' }}>MedLedger</h1>
-          <p style={{ fontSize: 16, color: 'var(--color-muted-foreground)', margin: 0, fontFamily: 'Inter, sans-serif' }}>Important Disclaimer</p>
+          <h1 style={{ fontSize: 24, fontWeight: 700, fontFamily: 'Geist, sans-serif', color: 'var(--color-foreground)', margin: '0 0 4px', textAlign: 'center' }}>MedLedger</h1>
+          <p style={{ fontSize: 16, color: 'var(--color-muted-foreground)', margin: 0, fontFamily: 'Geist, sans-serif' }}>Important Disclaimer</p>
         </div>
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: 20, marginBottom: 24 }}>
           {sections.map(s => (
             <div key={s.title}>
-              <h2 style={{ fontSize: 13, fontWeight: 700, color: 'var(--color-primary)', margin: '0 0 6px', fontFamily: 'Inter, sans-serif', letterSpacing: '0.3px' }}>{s.title}</h2>
-              <p style={{ fontSize: 13, lineHeight: 1.6, color: 'var(--color-foreground)', margin: 0, fontFamily: 'Inter, sans-serif' }}>{s.body}</p>
+              <h2 style={{ fontSize: 13, fontWeight: 700, color: 'var(--color-primary)', margin: '0 0 6px', fontFamily: 'Geist, sans-serif', letterSpacing: '0.3px' }}>{s.title}</h2>
+              <p style={{ fontSize: 13, lineHeight: 1.6, color: 'var(--color-foreground)', margin: 0, fontFamily: 'Geist, sans-serif' }}>{s.body}</p>
             </div>
           ))}
         </div>
@@ -67,7 +67,7 @@ export default function DisclaimerScreen() {
           >
             {accepted && <span style={{ color: 'white', fontSize: 14, fontWeight: 700 }}>✓</span>}
           </button>
-          <span style={{ fontSize: 14, fontFamily: 'Inter, sans-serif', color: 'var(--color-foreground)' }}>
+          <span style={{ fontSize: 14, fontFamily: 'Geist, sans-serif', color: 'var(--color-foreground)' }}>
             I have read and understand this disclaimer
           </span>
         </div>
