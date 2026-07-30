@@ -23,13 +23,14 @@ workflows:
         script: |
           rm -rf ios
           npx cap add ios
-          npx cap sync ios
-          # Fix deployment target AFTER sync
+          # Fix deployment target before pod install
           perl -i -pe "s/platform :ios, '[0-9.]+'/platform :ios, '14.0'/" ios/App/Podfile
-          echo "--- Podfile after fix ---"
-          cat ios/App/Podfile
-          # Run pod install manually with correct target
-          cd ios/App && pod install
+          # Sync without pod install
+          npx cap sync ios --no-deps
+          # Fix again in case sync overwrote it
+          perl -i -pe "s/platform :ios, '[0-9.]+'/platform :ios, '14.0'/" ios/App/Podfile
+          # Run pod install manually
+          cd ios/App && pod install --repo-update
       - name: Set up code signing
         script: xcode-project use-profiles
       - name: Build iOS
