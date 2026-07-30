@@ -25,14 +25,23 @@ workflows:
         script: xcode-project use-profiles
       - name: Build iOS
         script: |
-          xcode-build-incremental \
+          mkdir -p /tmp/xcodebuild
+          cp ExportOptions.plist /tmp/ExportOptions.plist
+          xcodebuild \
             -workspace "$XCODE_WORKSPACE" \
             -scheme "$XCODE_SCHEME" \
-            -config Release \
+            -configuration Release \
             -archivePath /tmp/xcodebuild/MedLedger.xcarchive \
-            OTHER_CODE_SIGN_FLAGS="--keychain /Users/builder/Library/Keychains/ios-build.keychain" \
-            CODE_SIGN_STYLE=Manual
+            archive \
+            CODE_SIGN_STYLE=Manual \
+            | xcpretty
+          xcodebuild \
+            -exportArchive \
+            -archivePath /tmp/xcodebuild/MedLedger.xcarchive \
+            -exportOptionsPlist /tmp/ExportOptions.plist \
+            -exportPath /tmp/xcodebuild/ipa \
+            | xcpretty
     artifacts:
       - /tmp/xcodebuild/*.xcarchive
-      - "**/*.ipa"
+      - /tmp/xcodebuild/ipa/*.ipa
       - /tmp/xcodebuild/*.dsym
