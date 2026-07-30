@@ -23,10 +23,12 @@ workflows:
         script: |
           rm -rf ios
           npx cap add ios
-          # Set minimum deployment target to 14.0
-          sed -i '' "s/platform :ios, '13.0'/platform :ios, '14.0'/" ios/App/Podfile || \
-          sed -i '' "s/platform :ios, '12.0'/platform :ios, '14.0'/" ios/App/Podfile || \
-          echo "platform :ios, '14.0'" >> ios/App/Podfile
+          echo "--- Podfile before ---"
+          cat ios/App/Podfile
+          # Update deployment target
+          perl -i -pe "s/platform :ios, '[0-9.]+'/platform :ios, '14.0'/" ios/App/Podfile
+          echo "--- Podfile after ---"
+          cat ios/App/Podfile
           npx cap sync ios
       - name: Set up code signing
         script: xcode-project use-profiles
