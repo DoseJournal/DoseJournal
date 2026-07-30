@@ -16,18 +16,21 @@ workflows:
       - name: Install dependencies
         script: |
           npm install --force
-          npm install @capacitor/core @capacitor/ios @capacitor/cli --force
+          npm install @capacitor/core@6 @capacitor/ios@6 @capacitor/cli@6 --force
       - name: Build web assets
         script: npm run build
       - name: Add iOS platform
         script: |
           rm -rf ios
           npx cap add ios
-          # Patch Podfile deployment target
-          perl -i -pe "s/platform :ios, '[0-9.]+'/platform :ios, '14.0'/" ios/App/Podfile
+          echo "--- Podfile ---"
+          cat ios/App/Podfile
+          # Patch deployment target to 13.0 which Capacitor 6 supports
+          perl -i -pe "s/platform :ios, '[0-9.]+'/platform :ios, '13.0'/" ios/App/Podfile
+          echo "--- Patched Podfile ---"
+          cat ios/App/Podfile
       - name: Install CocoaPods
-        script: |
-          cd ios/App && pod install --repo-update
+        script: cd ios/App && pod install --repo-update
       - name: Sync web assets
         script: npx cap copy ios
       - name: Set up code signing
