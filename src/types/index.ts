@@ -32,15 +32,26 @@ export interface CheckinEntry {
   ratings: { question: string; value: number }[];
 }
 
+export interface PRNDose {
+  id: string;
+  medicationId: string;
+  timestamp: Date;
+  tabletsaken?: number;
+  notes?: string;
+}
+
 export interface AppSettings {
   userName: string;
   eveningCheckinEnabled: boolean;
   requirePhotoWhenLogging: boolean;
   loggingQuestionsEnabled: boolean;
+  loggingQuestions: string[];
+  checkinQuestions: string[];
   customQuestions: string[];
   eveningCheckinTime: string;
   accentColor: string;
   darkMode: boolean;
   disclaimerAccepted: boolean;
   onboardingComplete: boolean;
+  accessibilityMode: boolean;
 }
