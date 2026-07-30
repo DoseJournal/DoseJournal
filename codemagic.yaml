@@ -19,18 +19,17 @@ workflows:
           npm install @capacitor/core @capacitor/ios @capacitor/cli --force
       - name: Build web assets
         script: npm run build
-      - name: Add and sync iOS platform
+      - name: Add iOS platform
         script: |
           rm -rf ios
           npx cap add ios
-          # Fix deployment target before pod install
+          # Patch Podfile deployment target
           perl -i -pe "s/platform :ios, '[0-9.]+'/platform :ios, '14.0'/" ios/App/Podfile
-          # Sync without pod install
-          npx cap sync ios --no-deps
-          # Fix again in case sync overwrote it
-          perl -i -pe "s/platform :ios, '[0-9.]+'/platform :ios, '14.0'/" ios/App/Podfile
-          # Run pod install manually
+      - name: Install CocoaPods
+        script: |
           cd ios/App && pod install --repo-update
+      - name: Sync web assets
+        script: npx cap copy ios
       - name: Set up code signing
         script: xcode-project use-profiles
       - name: Build iOS
