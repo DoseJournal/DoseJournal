@@ -36,7 +36,7 @@ export interface PRNDose {
   id: string;
   medicationId: string;
   timestamp: Date;
-  tabletsaken?: number;
+  tabletsCount?: number;
   notes?: string;
 }
 
