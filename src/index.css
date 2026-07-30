@@ -1,0 +1,111 @@
+@import "tailwindcss";
+
+@theme {
+  --color-background: #EEF0F2;
+  --color-foreground: #14181C;
+  --color-card: #FFFFFF;
+  --color-card-foreground: #14181C;
+  --color-primary: #FF8400;
+  --color-primary-foreground: #14181C;
+  --color-secondary: #E2E5E9;
+  --color-secondary-foreground: #14181C;
+  --color-muted: #E7E9EC;
+  --color-muted-foreground: #66707A;
+  --color-border: #D2D7DD;
+  --color-destructive: #D93C15;
+  --color-success: #DFE6E1;
+  --color-success-foreground: #004D1A;
+  --color-warning: #E9E3D8;
+  --color-warning-foreground: #804200;
+  --color-error: #E5DCDA;
+  --color-error-foreground: #8C1C00;
+  --color-info: #DFDFE6;
+  --color-info-foreground: #000066;
+  --color-partial: #FFD4A8;
+
+  --font-family-primary: "JetBrains Mono", monospace;
+  --font-family-secondary: "Inter", sans-serif;
+  --font-family-mono: "JetBrains Mono", monospace;
+
+  --shadow-card: 0 1px 2px rgba(20,24,28,0.04), 0 4px 14px rgba(20,24,28,0.05);
+  --shadow-button: 0 1px 2px rgba(20,24,28,0.08), 0 6px 16px rgba(255,132,0,0.20), inset 0 1px 0 rgba(255,255,255,0.35);
+  --shadow-button-active: 0 1px 1px rgba(20,24,28,0.08), inset 0 1px 2px rgba(20,24,28,0.12);
+
+  --radius-m: 16px;
+  --radius-pill: 999px;
+}
+
+* {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html, body {
+  height: 100%;
+}
+
+body {
+  font-family: "Inter", sans-serif;
+  background: #1a1a1a;
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+  height: 100dvh;
+  display: flex;
+  justify-content: center;
+  overflow: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+#root {
+  width: 390px;
+  height: 100%;
+  background: var(--color-background);
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+@media (max-width: 390px) {
+  #root {
+    width: 100%;
+  }
+}
+
+.dark #root {
+  --color-background: #11151A;
+  --color-foreground: #F2F4F6;
+  --color-card: #1A1F26;
+  --color-card-foreground: #F2F4F6;
+  --color-secondary: #262C34;
+  --color-secondary-foreground: #F2F4F6;
+  --color-muted: #232930;
+  --color-muted-foreground: #9AA4AE;
+  --color-border: #2E353D;
+  --color-destructive: #FF5C33;
+  --shadow-card: 0 1px 2px rgba(0,0,0,0.4), 0 4px 14px rgba(0,0,0,0.35);
+  --shadow-button: 0 1px 2px rgba(0,0,0,0.3), 0 6px 18px rgba(255,132,0,0.18), inset 0 1px 0 rgba(255,255,255,0.12);
+}
+
+.scrollable {
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+input, select, textarea {
+  font-family: "Inter", sans-serif;
+}
+
+/* Tactile press feedback for interactive elements */
+button {
+  transition: transform 0.08s ease, box-shadow 0.08s ease, background-color 0.15s ease;
+}
+button:active {
+  transform: scale(0.98);
+}
+
+.btn-primary:active {
+  box-shadow: var(--shadow-button-active);
+  transform: scale(0.98);
+}
