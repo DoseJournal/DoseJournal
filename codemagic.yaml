@@ -3,8 +3,6 @@ workflows:
     name: MedLedger iOS
     max_build_duration: 120
     instance_type: mac_mini_m2
-    integrations:
-      app_store_connect: codemagic
     environment:
       ios_signing:
         distribution_type: app_store
@@ -38,5 +36,6 @@ workflows:
       - /tmp/xcodebuild/*.dsym
     publishing:
       app_store_connect:
-        auth: integration
+        apple_id: amyjuliet13@gmail.com
+        password: $APP_SPECIFIC_PASSWORD
         submit_to_testflight: true
