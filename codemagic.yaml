@@ -34,8 +34,3 @@ workflows:
       - /tmp/xcodebuild/*.xcarchive
       - "**/*.ipa"
       - /tmp/xcodebuild/*.dsym
-    publishing:
-      app_store_connect:
-        apple_id: amyjuliet13@gmail.com
-        password: $APP_SPECIFIC_PASSWORD
-        submit_to_testflight: true
