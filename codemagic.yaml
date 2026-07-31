@@ -7,7 +7,6 @@ workflows:
       ios_signing:
         distribution_type: app_store
         bundle_identifier: com.amyjuliet.dosejournal
-        provisioning_profile: DoseJournal_AppStore
       vars:
         XCODE_WORKSPACE: "ios/App/App.xcworkspace"
         XCODE_SCHEME: "App"
@@ -42,6 +41,7 @@ workflows:
             -archivePath /tmp/xcodebuild/DoseJournal.xcarchive \
             archive \
             CODE_SIGN_STYLE=Manual \
+            PROVISIONING_PROFILE_SPECIFIER="DoseJournal AppStore" \
             | xcpretty
           xcodebuild \
             -exportArchive \
