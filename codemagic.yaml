@@ -10,7 +10,7 @@ workflows:
       vars:
         XCODE_WORKSPACE: "ios/App/App.xcworkspace"
         XCODE_SCHEME: "App"
-        APP_STORE_APPLE_ID: 6796246208
+        APP_STORE_APPLE_ID: 6796551533
       node: v20.19.0
     scripts:
       - name: Install dependencies
