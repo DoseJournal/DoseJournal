@@ -42,15 +42,15 @@ workflows:
             -archivePath /tmp/xcodebuild/DoseJournal.xcarchive \
             archive \
             CODE_SIGN_STYLE=Manual \
-            PROVISIONING_PROFILE_SPECIFIER="DoseJournal_AppStore" \
-            | xcpretty
+            PROVISIONING_PROFILE_SPECIFIER="DoseJournal_AppStore" 2>&1 | tee /tmp/xcodebuild.log
+          cat /tmp/xcodebuild.log | grep -E "error:|warning:|ARCHIVE" | tail -30
           xcodebuild \
             -exportArchive \
             -archivePath /tmp/xcodebuild/DoseJournal.xcarchive \
             -exportOptionsPlist /tmp/ExportOptions.plist \
-            -exportPath /tmp/xcodebuild/ipa \
-            | xcpretty
+            -exportPath /tmp/xcodebuild/ipa
     artifacts:
       - /tmp/xcodebuild/*.xcarchive
       - /tmp/xcodebuild/ipa/*.ipa
       - /tmp/xcodebuild/*.dsym
+      - /tmp/xcodebuild.log
