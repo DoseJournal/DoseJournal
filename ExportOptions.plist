@@ -15,7 +15,7 @@
   <key>provisioningProfiles</key>
   <dict>
     <key>com.amyjuliet.dosejournal</key>
-    <string>DoseJournal_AppStore</string>
+    <string>DoseJournal</string>
   </dict>
 </dict>
 </plist>
