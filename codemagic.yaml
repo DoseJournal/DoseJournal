@@ -38,10 +38,11 @@ workflows:
             -workspace "$XCODE_WORKSPACE" \
             -scheme "$XCODE_SCHEME" \
             -configuration Release \
+            -destination "generic/platform=iOS" \
             -archivePath /tmp/xcodebuild/DoseJournal.xcarchive \
             archive \
             CODE_SIGN_STYLE=Manual \
-            PROVISIONING_PROFILE_SPECIFIER="DoseJournal AppStore" \
+            PROVISIONING_PROFILE_SPECIFIER="DoseJournal_AppStore" \
             | xcpretty
           xcodebuild \
             -exportArchive \
