@@ -51,7 +51,7 @@ export default function AuthScreen() {
         {/* Logo / wordmark */}
         <div style={{ marginBottom: 40 }}>
           <div style={{ width: 52, height: 52, borderRadius: 14, background: 'var(--color-primary)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 16, boxShadow: 'var(--shadow-button)' }}>
-            <span style={{ fontSize: 26, fontWeight: 800, fontFamily: 'Inter, sans-serif', color: 'var(--color-primary-foreground)' }}>M</span>
+            <span style={{ fontSize: 26, fontWeight: 800, fontFamily: 'Inter, sans-serif', color: 'var(--color-primary-foreground)' }}>D</span>
           </div>
           <h1 style={{ fontSize: 28, fontWeight: 800, fontFamily: 'Inter, sans-serif', color: 'var(--color-foreground)', margin: '0 0 6px', letterSpacing: '-0.5px' }}>
             {mode === 'signin' ? 'Welcome back' : mode === 'signup' ? 'Create account' : 'Reset password'}
@@ -82,7 +82,6 @@ export default function AuthScreen() {
             </div>
           )}
 
-          {/* Error / success messages */}
           {error && (
             <div style={{ background: 'var(--color-error)', borderRadius: 12, padding: '12px 14px' }}>
               <p style={{ fontSize: 13, color: 'var(--color-error-foreground)', fontFamily: 'Inter, sans-serif', margin: 0 }}>{error}</p>
@@ -94,14 +93,12 @@ export default function AuthScreen() {
             </div>
           )}
 
-          {/* Primary action */}
           <div style={{ marginTop: 4 }}>
             <OrangeButton onClick={mode === 'signin' ? handleSignIn : mode === 'signup' ? handleSignUp : handleForgot}>
               {loading ? 'Please wait...' : mode === 'signin' ? 'Sign in' : mode === 'signup' ? 'Create account' : 'Send reset link'}
             </OrangeButton>
           </div>
 
-          {/* Mode switches */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginTop: 4 }}>
             {mode === 'signin' && (
               <>
@@ -125,9 +122,8 @@ export default function AuthScreen() {
             )}
           </div>
 
-          {/* Disclaimer */}
           <p style={{ fontSize: 11, color: 'var(--color-muted-foreground)', fontFamily: 'Inter, sans-serif', textAlign: 'center', lineHeight: 1.6, marginTop: 8 }}>
-            MedLedger is a personal tracking tool only. It does not provide medical advice. Always follow your prescriber's instructions.
+            DoseJournal is a personal tracking tool only. It does not provide medical advice. Always follow your prescriber's instructions.
           </p>
         </div>
       </div>

@@ -18,7 +18,7 @@ export default function DisclaimerScreen() {
   const sections = [
     {
       title: 'PURPOSE',
-      body: 'MedLedger is a personal tracking tool designed to help you record your medication use, contextual factors, and any side effects you observe. It is intended solely as a self-management and personal logging aid.',
+      body: 'DoseJournal is a personal tracking tool designed to help you record your medication use, contextual factors, and any side effects you observe. It is intended solely as a self-management and personal logging aid.',
     },
     {
       title: 'NOT MEDICAL ADVICE',
@@ -42,7 +42,7 @@ export default function DisclaimerScreen() {
           <div style={{ width: 80, height: 80, borderRadius: '50%', background: '#FFF3E0', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 16 }}>
             <ShieldCheck size={40} color="var(--color-primary)" />
           </div>
-          <h1 style={{ fontSize: 24, fontWeight: 700, fontFamily: 'Geist, sans-serif', color: 'var(--color-foreground)', margin: '0 0 4px', textAlign: 'center' }}>MedLedger</h1>
+          <h1 style={{ fontSize: 24, fontWeight: 700, fontFamily: 'Geist, sans-serif', color: 'var(--color-foreground)', margin: '0 0 4px', textAlign: 'center' }}>DoseJournal</h1>
           <p style={{ fontSize: 16, color: 'var(--color-muted-foreground)', margin: 0, fontFamily: 'Geist, sans-serif' }}>Important Disclaimer</p>
         </div>
 

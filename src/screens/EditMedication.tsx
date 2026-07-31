@@ -176,7 +176,7 @@ export default function EditMedicationScreen() {
           <>
             <div style={{ background: 'var(--color-card)', border: '1px solid var(--color-border)', borderRadius: 14, padding: '14px 16px', marginBottom: 16 }}>
               <p style={{ fontSize: 13, fontFamily: 'Inter, sans-serif', color: 'var(--color-foreground)', margin: 0, lineHeight: 1.6 }}>
-                <strong>Please enter these details exactly as directed by your pharmacist or doctor.</strong> MedLedger calculates countdowns and daily totals purely from what you enter here — it has no built-in dosing knowledge. Double-check against your medication packaging or prescriber's instructions.
+                <strong>Please enter these details exactly as directed by your pharmacist or doctor.</strong> DoseJournal calculates countdowns and daily totals purely from what you enter here — it has no built-in dosing knowledge. Double-check against your medication packaging or prescriber's instructions.
               </p>
             </div>
             <div style={{ marginBottom: 16 }}>

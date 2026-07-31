@@ -32,23 +32,18 @@ export async function registerPushSubscription(): Promise<boolean> {
 
   try {
     const registration = await navigator.serviceWorker.ready;
-
-    // Check for existing subscription
     let subscription = await registration.pushManager.getSubscription();
 
     if (!subscription) {
-      // Create new subscription
       subscription = await registration.pushManager.subscribe({
         userVisibleOnly: true,
         applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY) as unknown as string,
       });
     }
 
-    // Save to Supabase
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return false;
 
-    // Upsert — replace existing subscription for this browser
     const { error } = await supabase
       .from('push_subscriptions')
       .upsert({
@@ -59,7 +54,6 @@ export async function registerPushSubscription(): Promise<boolean> {
       });
 
     if (error) {
-      // If upsert fails (e.g. no unique constraint), try insert
       await supabase.from('push_subscriptions').insert({
         profile_id: user.id,
         subscription: subscription.toJSON(),
@@ -68,7 +62,7 @@ export async function registerPushSubscription(): Promise<boolean> {
 
     return true;
   } catch (e) {
-    console.error('MedLedger: push registration failed', e);
+    console.error('DoseJournal: push registration failed', e);
     return false;
   }
 }
@@ -84,7 +78,7 @@ export async function enableNotifications(): Promise<{ success: boolean; message
 
   const permission = await requestNotificationPermission();
   if (!permission) {
-    return { success: false, message: 'Permission denied. Enable notifications in your device Settings → Safari → MedLedger.' };
+    return { success: false, message: 'Permission denied. Enable notifications in your device Settings → Safari → DoseJournal.' };
   }
 
   const registered = await registerPushSubscription();
@@ -95,7 +89,6 @@ export async function enableNotifications(): Promise<{ success: boolean; message
   return { success: true, message: 'Notifications enabled! You will be notified when your medications are due.' };
 }
 
-// Keep setTimeout-based fallback for when app is open
 export function scheduleTodayReminders(medications: Medication[]): void {
   if (!('Notification' in window) || Notification.permission !== 'granted') return;
   const now = new Date();
@@ -135,7 +128,7 @@ function showMedNotification(med: Medication): void {
   const body = `Time to take ${med.name} ${med.dose}${med.unit}`;
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.ready.then(reg => {
-      reg.showNotification('MedLedger 💊', {
+      reg.showNotification('DoseJournal 💊', {
         body, icon: '/icon-192.png', badge: '/icon-192.png',
         tag: `med-${med.id}`, requireInteraction: true,
       } as NotificationOptions);
@@ -156,9 +149,9 @@ export async function saveScheduleToCache(medications: Medication[]): Promise<vo
           time: `${parsed.hours.toString().padStart(2, '0')}:${parsed.minutes.toString().padStart(2, '0')}`,
         };
       }).filter(Boolean));
-    const cache = await caches.open('medledger-notifications');
+    const cache = await caches.open('dosejournal-notifications');
     await cache.put('schedule', new Response(JSON.stringify(schedule), { headers: { 'Content-Type': 'application/json' } }));
-  } catch (e) { console.warn('MedLedger: could not save schedule', e); }
+  } catch (e) { console.warn('DoseJournal: could not save schedule', e); }
 }
 
 export async function registerPeriodicSync(): Promise<void> {

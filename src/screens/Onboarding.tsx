@@ -102,7 +102,7 @@ export default function OnboardingScreen() {
       <div style={{ width: 96, height: 96, borderRadius: 28, background: 'var(--color-card)', border: '1px solid var(--color-border)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 28, boxShadow: '0 4px 24px rgba(134,59,255,0.15)' }}>
         <Pill size={48} color="var(--color-primary)" />
       </div>
-      <h1 style={{ fontSize: 32, fontWeight: 700, fontFamily: 'Geist, sans-serif', color: 'var(--color-foreground)', margin: '0 0 12px', textAlign: 'center' }}>MedLedger</h1>
+      <h1 style={{ fontSize: 32, fontWeight: 700, fontFamily: 'Geist, sans-serif', color: 'var(--color-foreground)', margin: '0 0 12px', textAlign: 'center' }}>DoseJournal</h1>
       <p style={{ fontSize: 16, color: 'var(--color-muted-foreground)', fontFamily: 'Geist, sans-serif', textAlign: 'center', lineHeight: 1.6, margin: '0 0 48px' }}>
         Your personal medication tracker. Let's get you set up in a couple of minutes.
       </p>
@@ -132,7 +132,7 @@ export default function OnboardingScreen() {
   // ── DISCLAIMER ───────────────────────────────────────────
   if (step === 'disclaimer') {
     const sections = [
-      { title: 'PURPOSE', body: 'MedLedger is a personal tracking tool to record medication use, contextual factors, and side effects. It is solely a self-management logging aid.' },
+      { title: 'PURPOSE', body: 'DoseJournal is a personal tracking tool to record medication use, contextual factors, and side effects. It is solely a self-management logging aid.' },
       { title: 'NOT MEDICAL ADVICE', body: 'This app does not provide medical advice, diagnosis, or treatment recommendations. Always consult your doctor or pharmacist before changing your medications.' },
       { title: 'NOT A MEDICAL DEVICE', body: 'Not a registered therapeutic good. Not evaluated by the TGA or any other regulatory body. Does not perform clinical analysis.' },
       { title: 'EMERGENCIES', body: 'If you think you are experiencing a medical emergency, call 000 immediately. Do not rely on this app in an emergency.' },
@@ -294,9 +294,9 @@ export default function OnboardingScreen() {
         You're all set{name ? `, ${name}` : ''}!
       </h1>
       <p style={{ fontSize: 16, color: 'var(--color-muted-foreground)', fontFamily: 'Geist, sans-serif', textAlign: 'center', lineHeight: 1.6, margin: '0 0 48px' }}>
-        MedLedger is ready to go. Start logging your medications and tracking how you feel.
+        DoseJournal is ready to go. Start logging your medications and tracking how you feel.
       </p>
-      <OrangeButton onClick={finish}>Go to MedLedger</OrangeButton>
+      <OrangeButton onClick={finish}>Go to DoseJournal</OrangeButton>
     </div>
   );
 
