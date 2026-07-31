@@ -14,8 +14,8 @@
   <string>manual</string>
   <key>provisioningProfiles</key>
   <dict>
-    <key>com.amyjuliet.medledger</key>
-    <string>MedLedger AppStore</string>
+    <key>com.amyjuliet.dosejournal</key>
+    <string>DoseJournal AppStore</string>
   </dict>
 </dict>
 </plist>

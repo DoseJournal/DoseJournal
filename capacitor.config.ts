@@ -1,14 +1,14 @@
 import { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'com.amyjuliet.medledger',
-  appName: 'MedLedger',
+  appId: 'com.amyjuliet.dosejournal',
+  appName: 'DoseJournal',
   webDir: 'dist',
   server: {
     androidScheme: 'https'
   },
   ios: {
-    minVersion: '14.0'
+    minVersion: '13.0'
   }
 };
 

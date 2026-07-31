@@ -1,12 +1,12 @@
 workflows:
   ionic-capacitor-ios:
-    name: MedLedger iOS
+    name: DoseJournal iOS
     max_build_duration: 120
     instance_type: mac_mini_m2
     environment:
       ios_signing:
         distribution_type: app_store
-        bundle_identifier: com.amyjuliet.medledger
+        bundle_identifier: com.amyjuliet.dosejournal
       vars:
         XCODE_WORKSPACE: "ios/App/App.xcworkspace"
         XCODE_SCHEME: "App"
@@ -23,12 +23,7 @@ workflows:
         script: |
           rm -rf ios
           npx cap add ios
-          echo "--- Podfile ---"
-          cat ios/App/Podfile
-          # Patch deployment target to 13.0 which Capacitor 6 supports
           perl -i -pe "s/platform :ios, '[0-9.]+'/platform :ios, '13.0'/" ios/App/Podfile
-          echo "--- Patched Podfile ---"
-          cat ios/App/Podfile
       - name: Install CocoaPods
         script: cd ios/App && pod install --repo-update
       - name: Sync web assets
@@ -43,13 +38,13 @@ workflows:
             -workspace "$XCODE_WORKSPACE" \
             -scheme "$XCODE_SCHEME" \
             -configuration Release \
-            -archivePath /tmp/xcodebuild/MedLedger.xcarchive \
+            -archivePath /tmp/xcodebuild/DoseJournal.xcarchive \
             archive \
             CODE_SIGN_STYLE=Manual \
             | xcpretty
           xcodebuild \
             -exportArchive \
-            -archivePath /tmp/xcodebuild/MedLedger.xcarchive \
+            -archivePath /tmp/xcodebuild/DoseJournal.xcarchive \
             -exportOptionsPlist /tmp/ExportOptions.plist \
             -exportPath /tmp/xcodebuild/ipa \
             | xcpretty
