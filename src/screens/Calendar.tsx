@@ -1,7 +1,8 @@
-import { ChevronLeft, ChevronRight, Check } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Check, Pill, X } from 'lucide-react';
 import { useState } from 'react';
 import { StatusBar, BottomNav, Card } from '../components';
 import { useApp } from '../context/AppContext';
+import { matchSlotsForDay, getDayDoseSummary } from '../utils/schedule';
 
 function getDaysInMonth(year: number, month: number) {
   return new Date(year, month + 1, 0).getDate();
@@ -14,7 +15,7 @@ function getFirstDayOfMonth(year: number, month: number) {
 type DayStatus = 'all' | 'partial' | 'missed' | 'none';
 
 export default function CalendarScreen() {
-  const { medications, logs } = useApp();
+  const { medications, logs, prnDoses } = useApp();
   const now = new Date();
   const [year, setYear] = useState(now.getFullYear());
   const [month, setMonth] = useState(now.getMonth());
@@ -23,36 +24,54 @@ export default function CalendarScreen() {
   const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
   const dayHeaders = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
 
+  // Only scheduled (non-PRN) medications count toward "missed" / heatmap status.
+  const scheduledMeds = medications.filter(m => !m.asNeeded);
+  const asNeededMeds = medications.filter(m => m.asNeeded);
+
+  const logsOnDay = (day: number) => logs.filter(l => {
+    const ld = new Date(l.timestamp);
+    return ld.getDate() === day && ld.getMonth() === month && ld.getFullYear() === year && l.status === 'taken';
+  });
+
   const getDayStatus = (day: number): DayStatus => {
-    if (medications.length === 0) return 'none';
+    if (scheduledMeds.length === 0) return 'none';
     const d = new Date(year, month, day);
     if (d > now) return 'none';
 
-    const dayLogs = logs.filter(l => {
-      const ld = new Date(l.timestamp);
-      return ld.getDate() === day && ld.getMonth() === month && ld.getFullYear() === year && l.status === 'taken';
-    });
-
-    if (dayLogs.length === 0) return 'missed';
-    if (dayLogs.length >= medications.length) return 'all';
+    const { expected, taken } = getDayDoseSummary(scheduledMeds, logsOnDay(day));
+    if (expected === 0) return 'none';
+    if (taken === 0) return 'missed';
+    if (taken >= expected) return 'all';
     return 'partial';
   };
 
-  const getDayLogs = (day: number) => {
-    return medications.map(med => {
-      const taken = logs.find(l => {
-        const ld = new Date(l.timestamp);
-        return l.medicationId === med.id &&
-          ld.getDate() === day && ld.getMonth() === month && ld.getFullYear() === year &&
-          l.status === 'taken';
-      });
-      return { med, taken };
+  // Per-medication, per-time-slot breakdown for the selected day's detail card.
+  const getDaySlots = (day: number) => {
+    const dayLogs = logsOnDay(day);
+    return scheduledMeds.map(med => {
+      const medLogs = dayLogs.filter(l => l.medicationId === med.id);
+      const slots = matchSlotsForDay(med.times, medLogs);
+      return { med, slots };
     });
+  };
+
+  const getDayPRNDoses = (day: number) => {
+    return prnDoses
+      .filter(d => {
+        const dd = new Date(d.timestamp);
+        return dd.getDate() === day && dd.getMonth() === month && dd.getFullYear() === year;
+      })
+      .map(dose => ({
+        dose,
+        med: asNeededMeds.find(m => m.id === dose.medicationId),
+      }))
+      .filter(x => x.med)
+      .sort((a, b) => new Date(a.dose.timestamp).getTime() - new Date(b.dose.timestamp).getTime());
   };
 
   const statusColor: Record<DayStatus, string> = {
     all: 'var(--color-primary)',
-    partial: '#FFD4A8',
+    partial: 'var(--color-primary-tint)',
     missed: 'var(--color-secondary)',
     none: 'var(--color-secondary)',
   };
@@ -64,7 +83,9 @@ export default function CalendarScreen() {
   const weeks: (number | null)[][] = [];
   for (let i = 0; i < cells.length; i += 7) weeks.push(cells.slice(i, i + 7));
 
-  const selectedDayLogs = getDayLogs(selected);
+  const selectedDaySlots = getDaySlots(selected);
+  const selectedDayPRN = getDayPRNDoses(selected);
+  const isFutureSelected = new Date(year, month, selected) > now;
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100%', background: 'var(--color-background)' }}>
@@ -85,13 +106,19 @@ export default function CalendarScreen() {
         </div>
 
         <div style={{ display: 'flex', gap: 16, marginBottom: 12 }}>
-          {[['var(--color-secondary)', 'Missed'], ['#FFD4A8', 'Partial'], ['var(--color-primary)', 'All taken']].map(([color, label]) => (
+          {[['var(--color-secondary)', 'Missed'], ['var(--color-primary-tint)', 'Partial'], ['var(--color-primary)', 'All taken']].map(([color, label]) => (
             <div key={label} style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
               <div style={{ width: 10, height: 10, borderRadius: '50%', background: color }} />
               <span style={{ fontSize: 12, color: 'var(--color-muted-foreground)', fontFamily: 'Geist, sans-serif' }}>{label}</span>
             </div>
           ))}
         </div>
+
+        {scheduledMeds.length === 0 && asNeededMeds.length > 0 && (
+          <p style={{ fontSize: 12, color: 'var(--color-muted-foreground)', fontFamily: 'Geist, sans-serif', margin: '0 0 12px' }}>
+            The heatmap tracks scheduled medications only. As-required doses are shown below when you select a day.
+          </p>
+        )}
 
         <Card style={{ padding: 12, marginBottom: 16 }}>
           <div style={{ display: 'flex', gap: 4, marginBottom: 6 }}>
@@ -130,7 +157,7 @@ export default function CalendarScreen() {
           </div>
         </Card>
 
-        <Card style={{ padding: 16 }}>
+        <Card style={{ padding: 16, marginBottom: asNeededMeds.length > 0 ? 12 : 0 }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
             <span style={{ fontSize: 15, fontWeight: 700, fontFamily: 'Geist, sans-serif', color: 'var(--color-foreground)' }}>
               {dayHeaders[(new Date(year, month, selected).getDay() + 6) % 7]}, {months[month]} {selected}
@@ -140,31 +167,63 @@ export default function CalendarScreen() {
             )}
           </div>
 
-          {medications.length === 0 ? (
-            <p style={{ fontSize: 14, color: 'var(--color-muted-foreground)', fontFamily: 'Geist, sans-serif', margin: 0 }}>No medications added yet.</p>
+          {scheduledMeds.length === 0 ? (
+            <p style={{ fontSize: 14, color: 'var(--color-muted-foreground)', fontFamily: 'Geist, sans-serif', margin: 0 }}>No scheduled medications added yet.</p>
           ) : (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-              {selectedDayLogs.map(({ med, taken }) => (
-                <div key={med.id} style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                  <div style={{ width: 10, height: 10, borderRadius: '50%', background: taken ? 'var(--color-primary)' : '#FFD4A8', flexShrink: 0 }} />
-                  <span style={{ fontSize: 14, fontFamily: 'Geist, sans-serif', color: 'var(--color-foreground)', flex: 1 }}>{med.name} {med.dose}{med.unit}</span>
-                  {taken ? (
-                    <>
-                      <span style={{ fontSize: 12, fontFamily: 'Geist Mono, monospace', color: 'var(--color-muted-foreground)' }}>
-                        {new Date(taken.timestamp).toLocaleTimeString('en-AU', { hour: 'numeric', minute: '2-digit', hour12: true })}
-                      </span>
-                      <Check size={14} color="#004D1A" />
-                    </>
-                  ) : (
-                    <span style={{ fontSize: 12, fontFamily: 'Geist Mono, monospace', color: 'var(--color-primary)' }}>
-                      {new Date(year, month, selected) > now ? 'Upcoming' : 'Missed'}
+              {selectedDaySlots.map(({ med, slots }) => (
+                slots.map((slot, i) => (
+                  <div key={`${med.id}-${i}`} style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                    <div style={{ width: 10, height: 10, borderRadius: '50%', background: slot.taken ? 'var(--color-primary)' : 'var(--color-primary-tint)', flexShrink: 0 }} />
+                    <span style={{ fontSize: 14, fontFamily: 'Geist, sans-serif', color: 'var(--color-foreground)', flex: 1 }}>
+                      {med.name} {med.dose}{med.unit}{slots.length > 1 ? ` · ${slot.time}` : ''}
                     </span>
-                  )}
-                </div>
+                    {slot.taken ? (
+                      <>
+                        <span style={{ fontSize: 12, fontFamily: 'Geist Mono, monospace', color: 'var(--color-muted-foreground)' }}>
+                          {slot.logTimestamp?.toLocaleTimeString('en-AU', { hour: 'numeric', minute: '2-digit', hour12: true })}
+                        </span>
+                        <Check size={14} color="#004D1A" />
+                      </>
+                    ) : (
+                      <span style={{ fontSize: 12, fontFamily: 'Geist Mono, monospace', fontWeight: 600, color: 'var(--color-muted-foreground)' }}>
+                        {isFutureSelected ? 'Upcoming' : 'Missed'}
+                      </span>
+                    )}
+                  </div>
+                ))
               ))}
             </div>
           )}
         </Card>
+
+        {/* As-required doses for the selected day — informational only, never "missed" */}
+        {asNeededMeds.length > 0 && (
+          <Card style={{ padding: 16 }}>
+            <span style={{ fontSize: 13, fontWeight: 700, fontFamily: 'Geist, sans-serif', color: 'var(--color-foreground)', display: 'block', marginBottom: 10 }}>
+              As Required
+            </span>
+            {selectedDayPRN.length === 0 ? (
+              <p style={{ fontSize: 13, color: 'var(--color-muted-foreground)', fontFamily: 'Geist, sans-serif', margin: 0 }}>
+                No as-required doses logged this day.
+              </p>
+            ) : (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                {selectedDayPRN.map(({ dose, med }) => (
+                  <div key={dose.id} style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                    <Pill size={14} color="var(--color-muted-foreground)" style={{ flexShrink: 0 }} />
+                    <span style={{ fontSize: 14, fontFamily: 'Geist, sans-serif', color: 'var(--color-foreground)', flex: 1 }}>
+                      {med!.name} {med!.dose}{med!.unit}{dose.tabletsCount && dose.tabletsCount > 1 ? ` × ${dose.tabletsCount}` : ''}
+                    </span>
+                    <span style={{ fontSize: 12, fontFamily: 'Geist Mono, monospace', color: 'var(--color-muted-foreground)' }}>
+                      {new Date(dose.timestamp).toLocaleTimeString('en-AU', { hour: 'numeric', minute: '2-digit', hour12: true })}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            )}
+          </Card>
+        )}
       </div>
       <BottomNav />
     </div>

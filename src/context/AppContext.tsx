@@ -116,6 +116,10 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       ? `0 1px 2px rgba(0,0,0,0.3), 0 6px 18px rgba(${r},${g},${b},0.22), inset 0 1px 0 rgba(255,255,255,0.12)`
       : `0 1px 2px rgba(20,24,28,0.08), 0 6px 16px rgba(${r},${g},${b},0.24), inset 0 1px 0 rgba(255,255,255,0.35)`;
     document.documentElement.style.setProperty('--shadow-button', baseShadow);
+
+    // A lighter tint of the accent color, for "partial" states (e.g. calendar heatmap)
+    // that should visually relate to the theme without being full-strength.
+    document.documentElement.style.setProperty('--color-primary-tint', `rgba(${r},${g},${b},0.32)`);
   }, [settings.accentColor, settings.darkMode]);
 
   useEffect(() => {

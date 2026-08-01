@@ -24,9 +24,12 @@ interface AppContextType {
   checkins: CheckinEntry[];
   prnDoses: PRNDose[];
   settings: AppSettings;
+  session: null;
   addMedication: (med: Omit<Medication, 'id'>) => void;
   removeMedication: (id: string) => void;
   addLog: (log: Omit<MedLog, 'id'>) => void;
+  updateLog: (id: string, updates: Partial<MedLog>) => void;
+  deleteLog: (id: string) => void;
   addCheckin: (entry: Omit<CheckinEntry, 'id'>) => void;
   addPRNDose: (dose: Omit<PRNDose, 'id'>) => void;
   updateSettings: (s: Partial<AppSettings>) => void;
@@ -108,12 +111,15 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
     document.documentElement.style.setProperty('--color-primary-foreground', luminance > 0.6 ? '#14181C' : '#FFFFFF');
 
-    // Accent-tinted shadow for the primary button
     const isDark = document.documentElement.classList.contains('dark') || document.querySelector('#root')?.classList.contains('dark');
     const baseShadow = isDark
       ? `0 1px 2px rgba(0,0,0,0.3), 0 6px 18px rgba(${r},${g},${b},0.22), inset 0 1px 0 rgba(255,255,255,0.12)`
       : `0 1px 2px rgba(20,24,28,0.08), 0 6px 16px rgba(${r},${g},${b},0.24), inset 0 1px 0 rgba(255,255,255,0.35)`;
     document.documentElement.style.setProperty('--shadow-button', baseShadow);
+
+    // A lighter tint of the accent color, for "partial" states (e.g. calendar heatmap)
+    // that should visually relate to the theme without being full-strength.
+    document.documentElement.style.setProperty('--color-primary-tint', `rgba(${r},${g},${b},0.32)`);
   }, [settings.accentColor, settings.darkMode]);
 
   useEffect(() => {
@@ -135,6 +141,14 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     setLogs(prev => [...prev, { ...log, id: Date.now().toString() }]);
   };
 
+  const updateLog = (id: string, updates: Partial<MedLog>) => {
+    setLogs(prev => prev.map(l => l.id === id ? { ...l, ...updates } : l));
+  };
+
+  const deleteLog = (id: string) => {
+    setLogs(prev => prev.filter(l => l.id !== id));
+  };
+
   const addCheckin = (entry: Omit<CheckinEntry, 'id'>) => {
     setCheckins(prev => [...prev, { ...entry, id: Date.now().toString() }]);
   };
@@ -148,7 +162,14 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   };
 
   return (
-    <AppContext.Provider value={{ medications, logs, checkins, prnDoses, settings, addMedication, removeMedication, addLog, addCheckin, addPRNDose, updateSettings, setMedications }}>
+    <AppContext.Provider value={{
+      medications, logs, checkins, prnDoses, settings,
+      session: null,
+      addMedication, removeMedication,
+      addLog, updateLog, deleteLog,
+      addCheckin, addPRNDose,
+      updateSettings, setMedications,
+    }}>
       {children}
     </AppContext.Provider>
   );

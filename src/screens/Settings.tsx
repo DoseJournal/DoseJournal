@@ -1,4 +1,4 @@
-import { GripVertical, X, Plus, Clock } from 'lucide-react';
+import { GripVertical, X, Plus, Clock, Pill, Trash2 } from 'lucide-react';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { StatusBar, BottomNav, Card, Toggle, SectionLabel } from '../components';
@@ -6,7 +6,7 @@ import { useApp } from '../context/AppContext';
 
 export default function SettingsScreen() {
   const navigate = useNavigate();
-  const { settings, updateSettings } = useApp();
+  const { settings, updateSettings, medications, removeMedication } = useApp();
   const [newQ, setNewQ] = useState('');
   const [addingQ, setAddingQ] = useState(false);
 
@@ -27,6 +27,37 @@ export default function SettingsScreen() {
       <StatusBar />
       <div className="scrollable" style={{ flex: 1, overflowY: 'auto', padding: '8px 20px 16px' }}>
         <h1 style={{ fontSize: 24, fontWeight: 700, fontFamily: 'Geist, sans-serif', color: 'var(--color-foreground)', margin: '0 0 24px' }}>Settings</h1>
+
+        {/* Medications */}
+        <div style={{ marginBottom: 24 }}>
+          <SectionLabel>MEDICATIONS</SectionLabel>
+          {medications.length > 0 && (
+            <Card style={{ overflow: 'hidden', marginBottom: 8 }}>
+              {medications.map((med, i) => (
+                <div key={med.id} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '12px 16px', borderTop: i > 0 ? '1px solid var(--color-border)' : 'none' }}>
+                  <Pill size={16} color="var(--color-muted-foreground)" />
+                  <div style={{ flex: 1 }}>
+                    <p style={{ fontSize: 14, fontWeight: 500, fontFamily: 'Geist, sans-serif', color: 'var(--color-foreground)', margin: 0 }}>{med.name}</p>
+                    <p style={{ fontSize: 12, color: 'var(--color-muted-foreground)', fontFamily: 'Geist, sans-serif', margin: 0 }}>
+                      {med.dose}{med.unit} · {med.frequency}
+                    </p>
+                  </div>
+                  <button onClick={() => removeMedication(med.id)} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 4, display: 'flex' }}>
+                    <Trash2 size={14} color="var(--color-muted-foreground)" />
+                  </button>
+                </div>
+              ))}
+            </Card>
+          )}
+          <button onClick={() => navigate('/add')} style={{
+            width: '100%', height: 40, borderRadius: 999, background: 'var(--color-muted)', border: '1px solid var(--color-border)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
+            cursor: 'pointer', boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
+          }}>
+            <Plus size={16} color="var(--color-muted-foreground)" />
+            <span style={{ fontSize: 14, fontFamily: '"JetBrains Mono", monospace', color: 'var(--color-muted-foreground)', fontWeight: 500 }}>Add Medication</span>
+          </button>
+        </div>
 
         {/* Tracking preferences */}
         <div style={{ marginBottom: 24 }}>

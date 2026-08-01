@@ -2,8 +2,10 @@ import { useNavigate } from 'react-router-dom';
 import { Settings, Check, Clock } from 'lucide-react';
 import { StatusBar } from '../components';
 import { useApp } from '../context/AppContext';
+import { matchSlotsForDay } from '../utils/schedule';
 
-function getMedStatus(time: string, logs: any[], medId: string): 'taken' | 'due' | 'upcoming' {
+function getSlotStatus(time: string, taken: boolean): 'taken' | 'due' | 'upcoming' {
+  if (taken) return 'taken';
   if (!time) return 'upcoming';
   const now = new Date();
   const [rawTime, period] = time.split(' ');
@@ -11,13 +13,6 @@ function getMedStatus(time: string, logs: any[], medId: string): 'taken' | 'due'
   let hours = h;
   if (period === 'PM' && h !== 12) hours += 12;
   if (period === 'AM' && h === 12) hours = 0;
-
-  const todayLogs = logs.filter(l => {
-    const ld = new Date(l.timestamp);
-    return l.medicationId === medId && l.status === 'taken' &&
-      ld.getDate() === now.getDate() && ld.getMonth() === now.getMonth() && ld.getFullYear() === now.getFullYear();
-  });
-  if (todayLogs.length > 0) return 'taken';
 
   const scheduled = new Date();
   scheduled.setHours(hours, m, 0, 0);
@@ -39,6 +34,23 @@ export default function AccessibilityHomeScreen() {
     upcoming: { bg: 'var(--color-secondary)', color: 'var(--color-muted-foreground)', label: 'Upcoming' },
   };
 
+  // Build one row per scheduled time slot per medication (handles twice/three-times daily correctly)
+  const todaysRows = regularMeds.flatMap(med => {
+    const todaysLogsForMed = logs.filter(l => {
+      const ld = new Date(l.timestamp);
+      return l.medicationId === med.id &&
+        ld.getDate() === now.getDate() && ld.getMonth() === now.getMonth() && ld.getFullYear() === now.getFullYear() &&
+        l.status === 'taken';
+    });
+    const slots = matchSlotsForDay(med.times, todaysLogsForMed);
+    return slots.map(slot => ({
+      key: `${med.id}-${slot.time}`,
+      med,
+      time: slot.time,
+      status: getSlotStatus(slot.time, slot.taken),
+    }));
+  });
+
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100%', background: 'var(--color-background)' }}>
       <StatusBar />
@@ -52,7 +64,7 @@ export default function AccessibilityHomeScreen() {
           Today's Medications
         </h1>
 
-        {regularMeds.length === 0 ? (
+        {todaysRows.length === 0 ? (
           <div style={{ padding: '40px 0', textAlign: 'center' }}>
             <p style={{ fontSize: 20, color: 'var(--color-muted-foreground)', fontFamily: 'Inter, sans-serif', lineHeight: 1.5 }}>
               No medications added yet.{'\n'}Go to Settings to add yours.
@@ -60,12 +72,10 @@ export default function AccessibilityHomeScreen() {
           </div>
         ) : (
           <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-            {regularMeds.map(med => {
-              const time = med.times[0] ?? '';
-              const status = getMedStatus(time, logs, med.id);
-              const style = statusStyle[status];
+            {todaysRows.map(row => {
+              const style = statusStyle[row.status];
               return (
-                <div key={med.id} style={{
+                <div key={row.key} style={{
                   background: 'var(--color-card)',
                   borderRadius: 20,
                   border: '1px solid var(--color-border)',
@@ -74,27 +84,27 @@ export default function AccessibilityHomeScreen() {
                 }}>
                   {/* Med name */}
                   <p style={{ fontSize: 28, fontWeight: 800, fontFamily: 'Inter, sans-serif', color: 'var(--color-foreground)', margin: '0 0 6px', letterSpacing: '-0.4px', lineHeight: 1.2 }}>
-                    {med.name}
+                    {row.med.name}
                   </p>
 
                   {/* Dose */}
                   <p style={{ fontSize: 22, fontWeight: 600, fontFamily: 'Inter, sans-serif', color: 'var(--color-primary)', margin: '0 0 16px' }}>
-                    {med.dose}{med.unit}{med.tabletCount && med.tabletCount !== '1' ? ` · ${med.tabletCount} tablets` : ''}
+                    {row.med.dose}{row.med.unit}{row.med.tabletCount && row.med.tabletCount !== '1' ? ` · ${row.med.tabletCount} tablets` : ''}
                   </p>
 
                   {/* Time + status row */}
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>
-                    {time ? (
+                    {row.time ? (
                       <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                         <Clock size={20} color="var(--color-muted-foreground)" />
                         <span style={{ fontSize: 20, fontWeight: 600, fontFamily: "'JetBrains Mono', monospace", color: 'var(--color-foreground)' }}>
-                          {time}
+                          {row.time}
                         </span>
                       </div>
                     ) : <div />}
 
                     <div style={{ display: 'flex', alignItems: 'center', gap: 8, background: style.bg, borderRadius: 999, padding: '8px 16px' }}>
-                      {status === 'taken' && <Check size={18} color={style.color} strokeWidth={3} />}
+                      {row.status === 'taken' && <Check size={18} color={style.color} strokeWidth={3} />}
                       <span style={{ fontSize: 16, fontWeight: 700, fontFamily: 'Inter, sans-serif', color: style.color }}>
                         {style.label}
                       </span>
