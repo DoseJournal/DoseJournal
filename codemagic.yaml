@@ -28,6 +28,11 @@ workflows:
         script: cd ios/App && pod install --repo-update
       - name: Sync web assets
         script: npx cap copy ios
+      - name: Set build number
+        script: |
+          echo "Setting build number to $BUILD_NUMBER"
+          perl -i -pe "s/CURRENT_PROJECT_VERSION = [0-9]+;/CURRENT_PROJECT_VERSION = $BUILD_NUMBER;/g" ios/App/App.xcodeproj/project.pbxproj
+          grep CURRENT_PROJECT_VERSION ios/App/App.xcodeproj/project.pbxproj
       - name: Set up code signing
         script: |
           xcode-project use-profiles
