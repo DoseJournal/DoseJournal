@@ -24,6 +24,10 @@ workflows:
           rm -rf ios
           npx cap add ios
           perl -i -pe "s/platform :ios, '[0-9.]+'/platform :ios, '13.0'/" ios/App/Podfile
+      - name: Generate app icon
+        script: |
+          npm install @capacitor/assets --save-dev --force
+          npx capacitor-assets generate --ios
       - name: Install CocoaPods
         script: cd ios/App && pod install --repo-update
       - name: Sync web assets
