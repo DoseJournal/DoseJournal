@@ -37,6 +37,10 @@ workflows:
           echo "Setting build number to $BUILD_NUMBER"
           perl -i -pe "s/CURRENT_PROJECT_VERSION = [0-9]+;/CURRENT_PROJECT_VERSION = $BUILD_NUMBER;/g" ios/App/App.xcodeproj/project.pbxproj
           grep CURRENT_PROJECT_VERSION ios/App/App.xcodeproj/project.pbxproj
+      - name: Restrict to iPhone only
+        script: |
+          perl -i -pe 's/TARGETED_DEVICE_FAMILY = "1,2"/TARGETED_DEVICE_FAMILY = 1/g' ios/App/App.xcodeproj/project.pbxproj
+          grep TARGETED_DEVICE_FAMILY ios/App/App.xcodeproj/project.pbxproj
       - name: Set up code signing
         script: |
           xcode-project use-profiles
