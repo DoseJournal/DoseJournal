@@ -1,14 +1,23 @@
-import { GripVertical, X, Plus, Clock, Pill, Trash2 } from 'lucide-react';
+import { GripVertical, X, Plus, Clock, Pill, Trash2, LogOut } from 'lucide-react';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { StatusBar, BottomNav, Card, Toggle, SectionLabel } from '../components';
 import { useApp } from '../context/AppContext';
+import { supabase } from '../lib/supabase';
 
 export default function SettingsScreen() {
   const navigate = useNavigate();
   const { settings, updateSettings, medications, removeMedication } = useApp();
   const [newQ, setNewQ] = useState('');
   const [addingQ, setAddingQ] = useState(false);
+  const [signingOut, setSigningOut] = useState(false);
+
+  const handleSignOut = async () => {
+    setSigningOut(true);
+    await supabase.auth.signOut();
+    // No need to navigate manually — AppContext's auth listener updates
+    // the session, and App.tsx automatically shows the Auth screen.
+  };
 
   const removeQuestion = (q: string) => {
     updateSettings({ customQuestions: settings.customQuestions.filter(x => x !== q) });
@@ -166,6 +175,22 @@ export default function SettingsScreen() {
             }}>
               <span style={{ fontSize: 14, fontWeight: 500, fontFamily: 'Geist, sans-serif', color: 'var(--color-foreground)' }}>View Disclaimer</span>
               <span style={{ fontSize: 14, color: 'var(--color-muted-foreground)' }}>→</span>
+            </button>
+          </Card>
+        </div>
+
+        {/* Sign out */}
+        <div style={{ marginBottom: 24 }}>
+          <Card>
+            <button onClick={handleSignOut} disabled={signingOut} style={{
+              display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
+              padding: '14px 16px', width: '100%', background: 'none', border: 'none',
+              cursor: signingOut ? 'default' : 'pointer', opacity: signingOut ? 0.6 : 1,
+            }}>
+              <LogOut size={16} color="#8C1C00" />
+              <span style={{ fontSize: 14, fontWeight: 600, fontFamily: 'Geist, sans-serif', color: '#8C1C00' }}>
+                {signingOut ? 'Signing out...' : 'Sign Out'}
+              </span>
             </button>
           </Card>
         </div>

@@ -1,4 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import type { Session } from '@supabase/supabase-js';
+import { supabase } from '../lib/supabase';
 import type { Medication, MedLog, CheckinEntry, AppSettings, PRNDose } from '../types';
 import { scheduleTodayReminders, saveScheduleToCache, registerPeriodicSync } from '../utils/notifications';
 
@@ -24,7 +26,8 @@ interface AppContextType {
   checkins: CheckinEntry[];
   prnDoses: PRNDose[];
   settings: AppSettings;
-  session: null;
+  session: Session | null;
+  sessionLoading: boolean;
   addMedication: (med: Omit<Medication, 'id'>) => void;
   removeMedication: (id: string) => void;
   addLog: (log: Omit<MedLog, 'id'>) => void;
@@ -72,6 +75,25 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const [checkins, setCheckins] = useState<CheckinEntry[]>([]);
   const [prnDoses, setPrnDoses] = useState<PRNDose[]>([]);
   const [settings, setSettings] = useState<AppSettings>(defaultSettings);
+  const [session, setSession] = useState<Session | null>(null);
+  const [sessionLoading, setSessionLoading] = useState(true);
+
+  // Track the real Supabase auth session, so signing in/out actually
+  // gates access to the rest of the app.
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data }) => {
+      setSession(data.session);
+      setSessionLoading(false);
+    });
+
+    const { data: listener } = supabase.auth.onAuthStateChange((_event, newSession) => {
+      setSession(newSession);
+    });
+
+    return () => {
+      listener.subscription.unsubscribe();
+    };
+  }, []);
 
   useEffect(() => {
     const saved = localStorage.getItem('medledger_settings');
@@ -164,7 +186,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   return (
     <AppContext.Provider value={{
       medications, logs, checkins, prnDoses, settings,
-      session: null,
+      session, sessionLoading,
       addMedication, removeMedication,
       addLog, updateLog, deleteLog,
       addCheckin, addPRNDose,
